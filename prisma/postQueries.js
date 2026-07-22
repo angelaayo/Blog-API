@@ -15,4 +15,5 @@ async function addPost(userId, title, content, published) {
     },
   });
 }
+
 module.exports = { getAllPosts, addPost };
