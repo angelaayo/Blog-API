@@ -7,11 +7,19 @@ const jwt = require("jsonwebtoken");
 const { verify } = require("node:crypto");
 require("dotenv/config");
 
+const indexRouter = require("./routes/indexRoutes.js");
+const userRouter = require("./routes/userRoutes.js");
+const postsRouter = require("./routes/postsRoutes.js");
+
 const PORT = process.env.PORT || 3000;
 const app = express();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: false }));
+
+app.use("/", indexRouter);
+app.use("/posts", postsRouter);
+app.use("/users", userRouter);
 
 app.listen(PORT, (err) => {
   if (err) {
