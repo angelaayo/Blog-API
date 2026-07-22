@@ -30,6 +30,10 @@ app.use("/", indexRouter);
 app.use("/posts", postsRouter);
 app.use("/users", userRouter);
 
+app.use((err, req, res, next) => {
+  res.status(err.status || 500).json({ message: err.message });
+});
+
 passport.use(new LocalStrategy({ usernameField: "email" }, localStrat));
 passport.serializeUser((user, done) => {
   done(null, user.id);

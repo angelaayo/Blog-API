@@ -1,12 +1,11 @@
 const prisma = require("../lib/prisma.js");
 
 async function getAllPosts() {
-  posts = await prisma.post.findMany();
-  return posts;
+  return await prisma.post.findMany();
 }
 
 async function addPost(userId, title, content, published) {
-  await prisma.post.create({
+  return await prisma.post.create({
     data: {
       title,
       userId,
@@ -16,4 +15,9 @@ async function addPost(userId, title, content, published) {
   });
 }
 
-module.exports = { getAllPosts, addPost };
+async function deletePost(id) {
+  return await prisma.post.delete({
+    where: { id },
+  });
+}
+module.exports = { getAllPosts, addPost, deletePost };

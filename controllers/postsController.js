@@ -1,23 +1,8 @@
-const jwt = require("jsonwebtoken");
-const { verify } = require("node:crypto");
-const { addPost, postInfo } = require("../prisma/postQueries");
-const helper = require("../hooks.js")
-require("dotenv/config");
 
-function verifyToken(req, res, next) {
-  const beaderHeader = req.headers["authorization"];
-  if (typeof beaderHeader == "undefined") {
-    return res.sendStatus(403);
-  }
+const postQuery = require("../prisma/postQueries.js");
+const { ensureValidPost } = require("../helper");
+const prisma = require("../lib/prisma.js");
 
-  const token = beaderHeader.split(" ")[1];
-
-  jwt.verify(token, process.env.SECRET_KEY, (err, authData) => {
-    if (err) return res.sendStatus(403);
-    req.user = authData;
-    next();
-  });
-}
 
 async function addNewPost(req, res) {
   const userId = 1;
@@ -25,29 +10,21 @@ async function addNewPost(req, res) {
   const content = "Hello world";
   const published = true;
 
-  await addPost(userId, title, content, published);
-  console.log(`message created`);
+  const newPost = await postQuery.addPost(userId, title, content, published);
+  res.json({ newPost });
 }
 
 async function getPostInfo(req, res) {
-  try {
-    const post = await prisma.post.findUnique({
-      where: { id: Number(req.params.postId) },
-      include: { comments: true },
-    });
-    res.json(post);
-  } catch (err) {
-    res.status(err.status || 500).json({ message: err.message });
-  }
+  const post = await prisma.post.findUnique({
+    where: { id: Number(req.params.postId) },
+    include: { comments: true },
+  });
+  res.json(post);
 }
 
 async function getPostForEdit(req, res) {
-  try {
-    const post = await helper.ensureValidUser(req.params.postId, req.user.id);
-    res.json(post);
-  } catch (err) {
-    res.status(err.status || 500).json({ message: err.message });
-  }
+  const post = await ensureValidPost(req.params.postId, req.user.id);
+  res.json(post);
 }
 
 async function updatePost(req, res) {
@@ -55,19 +32,12 @@ async function updatePost(req, res) {
 }
 
 async function deletePost(req, res) {
-  try {
-    await helper.ensureValidUser(req.params.postId, req.user.id);
-    const delPost = await prisma.post.delete({
-      where: { id: Number(req.params.postId) },
-    });
-    res.json(delPost);
-  } catch (err) {
-    res.status(err.status || 500).json({ message: err.message });
-  }
+  await ensureValidPost(req.params.postId, req.user.id);
+  const delPost = await postQuery.deletePost(Number(req.params.postId));
+  res.json(delPost);
 }
 
 module.exports = {
-  verifyToken,
   addNewPost,
   getPostInfo,
   getPostForEdit,

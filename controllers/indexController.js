@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 require("dotenv/config");
-
+const bcrypt = require("bcrypt");
 const { getAllPosts } = require("../prisma/postQueries");
 const { addUser } = require("../prisma/userQueries");
 
@@ -10,10 +10,12 @@ async function allPosts(req, res) {
 }
 
 async function addNewUser(req, res) {
-  const email = "angela@gmail.com";
-  const username = "angela";
+  const email = "angela1234@gmail.com";
+  const username = "angela1234";
   const password = "12345@";
-  await addUser(email, username, password);
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const newUser = await addUser(email, username, hashedPassword);
+  res.json({ newUser });
 }
 
 async function logInPost(req, res) {

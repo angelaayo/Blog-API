@@ -8,7 +8,7 @@ async function addUser(email, username, password) {
       password,
     },
   });
-  console.log(user);
+  return user;
 }
 
 module.exports = { addUser };
