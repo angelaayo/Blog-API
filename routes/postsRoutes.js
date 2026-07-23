@@ -8,7 +8,7 @@ postsRouter.post("/", verifyToken, postsController.addNewPost); //create post
 // postsRouter.get("/new"); //render post form
 postsRouter.get("/:postId", postsController.getPostInfo); ///view post and its comments
 postsRouter.get("/:postId/edit", verifyToken, postsController.getPostForEdit); // edit post form
-postsRouter.put("/:postId", verifyToken, postsController.updatePost); // update post -not completed
+postsRouter.put("/:postId", verifyToken, postsController.updatePost); // update post
 postsRouter.delete("/:postId", verifyToken, postsController.deletePost); //delete post
 postsRouter.post(
   "/:postId/comments",
@@ -20,7 +20,11 @@ postsRouter.get(
   verifyToken,
   commentController.getComment,
 ); // edit comment form
-postsRouter.put("/:postId/comments/:commentId", commentController.updateComment); // update comment --not completed
+postsRouter.put(
+  "/:postId/comments/:commentId",
+  verifyToken,
+  commentController.updateComment,
+); // update comment
 postsRouter.delete(
   "/:postId/comments/:commentId",
   verifyToken,

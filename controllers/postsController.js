@@ -1,8 +1,6 @@
-
 const postQuery = require("../prisma/postQueries.js");
 const { ensureValidPost } = require("../helper");
 const prisma = require("../lib/prisma.js");
-
 
 async function addNewPost(req, res) {
   const userId = 1;
@@ -29,6 +27,17 @@ async function getPostForEdit(req, res) {
 
 async function updatePost(req, res) {
   // need req.body info then prisma the info
+  await ensureValidPost(req.params.postId, req.user.id);
+  const title = "Testing123";
+  const content = "Hello everyone";
+  const published = false;
+  const editedPost = await postQuery.updatePost(
+    Number(req.params.postId),
+    title,
+    content,
+    published,
+  );
+  res.json({ editedPost });
 }
 
 async function deletePost(req, res) {

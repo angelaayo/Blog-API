@@ -20,4 +20,15 @@ async function deletePost(id) {
     where: { id },
   });
 }
-module.exports = { getAllPosts, addPost, deletePost };
+
+async function updatePost(id, title, content, published) {
+  return await prisma.post.update({
+    where: { id },
+    data: {
+      title,
+      content,
+      published,
+    },
+  });
+}
+module.exports = { getAllPosts, addPost, deletePost, updatePost };

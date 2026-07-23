@@ -19,27 +19,25 @@ async function addNewUser(req, res) {
 }
 
 async function logInPost(req, res) {
-  // const user = {
-  //   id: req.user.id,
-  //   username: req.user.username,
-  // };
+  if (req.user) {
+    const user = {
+      id: req.user.id,
+      username: req.user.username,
+      email: req.user.email,
+    };
 
-  const user = {
-    id: 2,
-    username: "Angela",
-    email: "angela@gmail.com",
-  };
-  jwt.sign(
-    user,
-    process.env.SECRET_KEY,
-    { expiresIn: "7 days" },
-    (err, token) => {
-      if (err) {
-        return res.status(500).json({ message: "Error signing token" });
-      }
-      res.json({ token });
-    },
-  );
+    jwt.sign(
+      user,
+      process.env.SECRET_KEY,
+      { expiresIn: "7 days" },
+      (err, token) => {
+        if (err) {
+          return res.status(500).json({ message: "Error signing token" });
+        }
+        res.json({ token });
+      },
+    );
+  }
 }
 
 async function logOutGet(req, res, next) {

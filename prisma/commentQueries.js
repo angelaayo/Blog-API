@@ -18,4 +18,12 @@ async function deleteComment(id) {
   return prisma.comment.delete({ where: { id } });
 }
 
-module.exports = { addComment, deleteComment };
+async function editComment(id, content) {
+  return prisma.comment.update({
+    where: { id },
+    data: {
+      content,
+    },
+  });
+}
+module.exports = { addComment, deleteComment, editComment };

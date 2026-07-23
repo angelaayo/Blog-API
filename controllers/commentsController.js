@@ -18,15 +18,20 @@ async function getComment(req, res) {
 }
 
 async function deleteComment(req, res) {
-    await ensureValidComment(req.params.commentId, req.user.id);
+  await ensureValidComment(req.params.commentId, req.user.id);
   const delComment = await commentQuery.deleteComment(
     Number(req.params.commentId),
   );
   res.json({ delComment });
 }
 
-async function updateComment(req, res){
-
+async function updateComment(req, res) {
+  await ensureValidComment(req.params.commentId, req.user.id);
+  const content = "Away from me";
+  const editedComment = await commentQuery.editComment(
+    Number(req.params.commentId),
+    content,
+  );
 }
 
 module.exports = { addComment, getComment, deleteComment, updateComment };
